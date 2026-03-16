@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Async Weather Tracker</title>
-<link rel="stylesheet">
+
 <style>
-    body{
+
+body{
 font-family: Arial;
 background: linear-gradient(to right,#1f2c5c,#243b6b);
 color:white;
@@ -17,6 +18,7 @@ display:flex;
 justify-content:center;
 gap:20px;
 margin-top:20px;
+flex-wrap:wrap;
 }
 
 .search-box, .weather-box{
@@ -60,46 +62,53 @@ color:red;
 
 li{
 cursor:pointer;
+margin:5px;
 }
+
 </style>
+
 </head>
 
 <body>
 
-<h1>🌤 Async Weather Tracker</h1>
+<h1>☁ Async Weather Tracker</h1>
 
 <div class="container">
 
-    <div class="search-box">
-        <h3>Search City</h3>
+<div class="search-box">
 
-        <input type="text" id="cityInput" placeholder="Enter city name">
-        <button id="searchBtn">Search</button>
+<h3>Search City</h3>
 
-        <h4>Search History</h4>
-        <ul id="history"></ul>
-    </div>
+<input type="text" id="cityInput" placeholder="Enter city name">
+<button id="searchBtn">Search</button>
 
+<h4>Search History</h4>
+<ul id="history"></ul>
 
-    <div class="weather-box">
-        <h3>Weather Info</h3>
+</div>
 
-        <p><strong>City:</strong> <span id="city"></span></p>
-        <p><strong>Temp:</strong> <span id="temp"></span></p>
-        <p><strong>Weather:</strong> <span id="weather"></span></p>
+<div class="weather-box">
 
-        <p id="error" class="error"></p>
-    </div>
+<h3>Weather Info</h3>
+
+<p><strong>City:</strong> <span id="city"></span></p>
+<p><strong>Temp:</strong> <span id="temp"></span></p>
+<p><strong>Weather:</strong> <span id="weather"></span></p>
+
+<p id="error" class="error"></p>
+
+</div>
 
 </div>
 
 <div class="console">
-    <h3>Console – Event Loop</h3>
-    <pre id="consoleLog"></pre>
+
+<h3>Console – Event Loop</h3>
+<pre id="consoleLog"></pre>
+
 </div>
 
 <script>
-    const apiKey = "YOUR_API_KEY"; // get from openweathermap.org
 
 const cityInput = document.getElementById("cityInput");
 const searchBtn = document.getElementById("searchBtn");
@@ -129,6 +138,14 @@ return;
 }
 
 getWeather(city);
+
+});
+
+
+cityInput.addEventListener("keypress", function(e){
+if(e.key==="Enter"){
+searchBtn.click();
+}
 });
 
 
@@ -140,31 +157,30 @@ try{
 
 log("2️⃣ Fetching weather...");
 
-const response = await fetch(
-`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
-);
-
-if(!response.ok){
-throw new Error("City not found");
-}
+const response = await fetch(`https://wttr.in/${city}?format=j1`);
 
 const data = await response.json();
 
 log("3️⃣ Data received");
 
-cityEl.textContent = data.name;
-tempEl.textContent = data.main.temp + " °C";
-weatherEl.textContent = data.weather[0].main;
+const weather = data.current_condition[0];
 
-errorEl.textContent = "";
+cityEl.textContent = city;
+tempEl.textContent = weather.temp_C + " °C";
+weatherEl.textContent = weather.weatherDesc[0].value;
+
+errorEl.textContent="";
 
 saveHistory(city);
 
-}catch(error){
+cityInput.value="";
+
+}
+catch(error){
 
 log("❌ Error occurred");
 
-errorEl.textContent = error.message;
+errorEl.textContent="City not found";
 
 }
 
@@ -179,10 +195,11 @@ let history = JSON.parse(localStorage.getItem("cities")) || [];
 
 if(!history.includes(city)){
 history.push(city);
-localStorage.setItem("cities", JSON.stringify(history));
+localStorage.setItem("cities",JSON.stringify(history));
 }
 
 displayHistory();
+
 }
 
 
@@ -192,12 +209,13 @@ historyEl.innerHTML="";
 
 let history = JSON.parse(localStorage.getItem("cities")) || [];
 
-history.forEach(city => {
+history.forEach(city=>{
 
-let li = document.createElement("li");
-li.textContent = city;
+let li=document.createElement("li");
 
-li.onclick = () => getWeather(city);
+li.textContent=city;
+
+li.onclick=()=>getWeather(city);
 
 historyEl.appendChild(li);
 
@@ -207,6 +225,7 @@ historyEl.appendChild(li);
 
 
 displayHistory();
+
 </script>
 
 </body>
