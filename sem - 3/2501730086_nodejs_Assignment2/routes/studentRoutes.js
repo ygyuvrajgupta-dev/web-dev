@@ -5,8 +5,7 @@ const router = express.Router();
 const {students} = require("../Data/student");
 
 
-// GET /students
-// Get all students
+
 router.get("/", (req, res) => {
     res.status(200).json({
         success: true,
@@ -16,8 +15,7 @@ router.get("/", (req, res) => {
 });
 
 
-// GET /students/:id
-// Get student by ID
+
 router.get("/:id", (req, res) => {
 
     const id = Number(req.params.id);
@@ -45,8 +43,7 @@ router.get("/:id", (req, res) => {
 });
 
 
-// POST /students
-// Add a new student
+
 router.post("/", (req, res) => {
 
     const { name, course } = req.body;
@@ -76,8 +73,7 @@ router.post("/", (req, res) => {
 });
 
 
-// PUT /students/:id
-// Update a student
+
 router.put("/:id", (req, res) => {
 
     const id = Number(req.params.id);
@@ -118,8 +114,7 @@ router.put("/:id", (req, res) => {
 });
 
 
-// DELETE /students/:id
-// Delete a student
+
 router.delete("/:id", (req, res) => {
 
     const id = Number(req.params.id);
