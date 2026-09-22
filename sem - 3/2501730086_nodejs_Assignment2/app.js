@@ -5,7 +5,7 @@ const studentRoutes = require("./routes/studentRoutes");
 
 const app = express();
 
-const PORT = 3000;
+const PORT = 5755;
 
 app.use(express.json());
 
